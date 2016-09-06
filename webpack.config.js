@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 'use strict';
 
 // Modules
@@ -30,7 +32,7 @@ module.exports = function makeWebpackConfig () {
    * Karma will set this when it's a test build
    */
   config.entry = isTest ? {} : {
-    app: './src/app/app.js'
+    app: './src/app/app.module.js'
   };
 
   /**
@@ -158,7 +160,7 @@ module.exports = function makeWebpackConfig () {
     // Render index.html
     config.plugins.push(
       new HtmlWebpackPlugin({
-        template: './src/public/index.html',
+        template: './src/index.html',
         inject: 'body'
       }),
 

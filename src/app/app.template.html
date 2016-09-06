@@ -1,0 +1,10 @@
+
+<layout layout="column" layout-align="center center">
+  <md-select ng-model="$ctrl.selectedStock">
+    <md-option ng-value="all">All</md-option>
+    <md-option ng-value="stock" ng-repeat="stock in $ctrl.stockSymbols">{{ stock }}</md-option>
+  </md-select>
+
+
+  <d3-charts stocks="$ctrl.stocks"></d3-charts>
+</layout>
