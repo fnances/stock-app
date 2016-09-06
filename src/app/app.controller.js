@@ -7,11 +7,12 @@ export default class StockAppController {
     this.$scope = $scope;
     this.stocks = "";
     this.stockSymbols = [];
+  }
+  $onInit () {
     this.apiConnect.getStockInfo().then(res => {
       this.stockSymbols = this.dataMining.getStocks(res);
       this.stocks = res;
     });
-
   }
 
 }
