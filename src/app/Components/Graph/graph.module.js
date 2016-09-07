@@ -1,10 +1,11 @@
 import angular from "angular";
 import GraphComponent from "./graph.component";
-import d3 from "../../services/d3/d3.module";
+import d3Charts from "./graph.directive";
 
 const Graph = angular
-  .module("Graph", [d3])
+  .module("Graph", [])
   .component("graph", GraphComponent)
+  .directive("d3Charts", d3Charts)
   .name;
 
 export default Graph;

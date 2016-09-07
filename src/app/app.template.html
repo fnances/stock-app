@@ -1,10 +1,17 @@
 
 <layout layout="column" layout-align="center center">
-  <md-select ng-change="$ctrl.onStockChange($ctrl.selectedStock)" ng-model="$ctrl.selectedStock">
+  <label>Select stock</label>
+  <md-select ng-change="$ctrl.filterStocksByNameOfCompany()" ng-model="$ctrl.selectedStock">
     <md-option ng-value="stock" ng-repeat="stock in $ctrl.stockSymbols">{{ stock }}</md-option>
   </md-select>
-
+  <layout layout="row" layout-align="center center">
+  <label for="datepicker">Date From</label>
+  <md-datepicker md-min-date="$ctrl.date.minDate" md-max-date="$ctrl.date.maxDate" ng-model="$ctrl.date.from" ng-change="$ctrl.onDateChange();"></md-datepicker>
+  <label>Date to</label>
+  <md-datepicker md-min-date="$ctrl.date.minDate" md-max-date="$ctrl.date.maxDate" ng-model="$ctrl.date.to" ng-change="$ctrl.onDateChange();"></md-datepicker>
+  </layout>
   <layout flex="50" layout-align="center center">
 
+      <graph date="$ctrl.date" stocks="$ctrl.stocksToDisplay"></graph>
   </layout>
 </layout>

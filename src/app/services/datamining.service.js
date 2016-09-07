@@ -1,10 +1,8 @@
 
 
 export default class DataMining {
-  constructor () {
-
-  }
   getStocks (stocks) {
+    this.stocks = stocks;
     const possibleStocks = [];
     stocks.forEach(stock => {
       const { Symbol } = stock;

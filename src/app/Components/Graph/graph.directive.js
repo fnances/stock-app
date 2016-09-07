@@ -11,7 +11,6 @@ const d3Charts = d3Service => ({
         d3 = d3Instance;
 
         $scope.$watch($attrs.stocks, newValue => {
-          if (!d3) return;
           renderGraph(newValue);
         });
       });

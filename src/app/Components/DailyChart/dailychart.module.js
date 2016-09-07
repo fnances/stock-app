@@ -1,10 +1,10 @@
 import angular from "angular";
-import DataTableComponent from "./datatable.component";
+import DailyChartComponent from "./DailyChart.component";
 
-const DataTable = angular
-  .module("DataTable", [])
-  .component("dataTable", DataTableComponent)
+const DailyChart = angular
+  .module("DailyChart", [])
+  .component("dailyChart", DailyChartComponent)
   .name;
 
 
-export default DataTable;
+export default DailyChart;

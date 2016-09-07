@@ -1,10 +1,10 @@
 
 
 export default class StockAppController {
-  constructor ($scope, apiConnect, dataMining) {
+  constructor (apiConnect, dataMining, filter) {
     this.apiConnect = apiConnect;
     this.dataMining = dataMining;
-    this.$scope = $scope;
+    this.filter = filter;
     this.stocks = [];
     this.stocksToDisplay = [];
     this.stockSymbols = [];
@@ -13,14 +13,32 @@ export default class StockAppController {
     this.apiConnect.getStockInfo().then(res => {
       this.stockSymbols = this.dataMining.getStocks(res);
       this.stocks = res;
-      this.stocksToDisplay = res;
+      this.filter.updateStocks(res);
     });
+    this.date = {
+      to: "",
+      from: "",
+      maxDate: "",
+      minDate: ""
+    };
+
   }
-  onStockChange (selectedStock) {
-    this.stocksToDisplay = this.stocks.filter(stock => stock.Symbol === selectedStock);
+  filterStocksByNameOfCompany () {
+    this.stocksToDisplay = this.filter.filterBySymbol(this.selectedStock);
+
+    const { highestDate, lowestDate } = this.filter.getHighestAndLowestDatePossible();
+    this.date.maxDate = highestDate;
+    this.date.minDate = lowestDate;
+
+    if (this.date.to || this.date.from) {
+      this.onDateChange();
+    }
+  }
+  onDateChange () {
+    this.stocksToDisplay = this.filter.filterByDate(this.date);
   }
 
 }
 
 
-StockAppController.$inject = ["$scope", "apiConnect", "dataMining"];
+StockAppController.$inject = ["apiConnect", "dataMining", "filter"];
