@@ -1,9 +1,9 @@
+/*eslint-disable*/
 
 const d3Charts = d3Service => ({
   restrict: "A",
   link ($scope, $element, $attrs) {
     let d3;
-    let svg;
     const $ctrl = $scope.$ctrl;
 
     d3Service.d3()
@@ -11,33 +11,20 @@ const d3Charts = d3Service => ({
         d3 = d3Instance;
 
         $scope.$watch($attrs.stocks, newValue => {
-          renderGraph(newValue);
+          const preparedData = newValue.map(d => {
+            d.High = Number(parseFloat(d.High, 10).toFixed(3));
+            d.Low = Number(parseFloat(d.Low, 10).toFixed(3));   // toFixed returns a string for no reason...
+            return d;
+          });
+          console.log(preparedData);
+          renderGraph(preparedData);
         });
       });
 
     const renderGraph = data => {
-      if (!svg) {
-        svg = d3
-          .select($element[0])
-          .append("svg")
-          .attr("width", "100%")
-          .attr("height", "100%");
-      }
-      const width = $element[0].style.width;
-      const dataPrepared = data
-        .filter(stock => !Number.isNaN(stock.High))
-        .map(stock => Math.round(parseFloat(stock.High, 10)));
-      const scale = d3.scaleLinear()
-        .domain([0, d3.max(d => d.High)])
-        .range([0, width]);
+      const maxValue = d3.max(data, d => d.High);
+      const minValue = d3.min(data, d => d.Low);
 
-      svg.selectAll("rect")
-        .data(dataPrepared)
-        .enter().append("rect")
-        .attr("x", d => d.High)
-        .attr("y", d => d.Low)
-        .attr("width", 20)
-        .attr("height", 20);
     };
   }
 });

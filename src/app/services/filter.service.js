@@ -38,8 +38,9 @@ export default class Filter {
     return stocksFiltered;
   }
   filterBySymbol (stockSymbol) {
-    this.filteredBySymbol = this.stocksInCache.filter(stock => stock.Symbol === stockSymbol);
-    return this.filteredBySymbol;
+    const filteredBySymbol = this.stocksInCache.filter(stock => stock.Symbol === stockSymbol);
+    this.filteredBySymbol = this.sortStocksByDate(filteredBySymbol);
+    return this.sortStocksByDate(this.filteredBySymbol);
   }
   getHighestAndLowestDatePossible () {
     const dates = this.filteredBySymbol.map(stock => Date.parse(stock.Date));
@@ -48,5 +49,9 @@ export default class Filter {
       highestDate: new Date(Math.max(...dates)),
       lowestDate: new Date(Math.min(...dates))
     };
+  }
+  sortStocksByDate (stocks) {
+    const compareFunc = (a, b) => Date.parse(a.Date) - Date.parse(b.Date);
+    return stocks.sort(compareFunc);
   }
 }

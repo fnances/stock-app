@@ -8,7 +8,7 @@ export default class ApiConnect {
 
   getStockInfo () {
     const { $http, apiEndpoint } = this;
-    return $http.get(apiEndpoint).then(response => response.data.query.results.quote); 
+    return $http.get(apiEndpoint).then(response => response.data.query.results.quote);
   }
 }
 

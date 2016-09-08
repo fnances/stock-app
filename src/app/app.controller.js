@@ -6,6 +6,7 @@ export default class StockAppController {
     this.dataMining = dataMining;
     this.filter = filter;
     this.stocks = [];
+    this.selectedStock = "CSCO";
     this.stocksToDisplay = [];
     this.stockSymbols = [];
   }
@@ -14,6 +15,7 @@ export default class StockAppController {
       this.stockSymbols = this.dataMining.getStocks(res);
       this.stocks = res;
       this.filter.updateStocks(res);
+      this.filterStocksByNameOfCompany();
     });
     this.date = {
       to: "",
@@ -36,6 +38,7 @@ export default class StockAppController {
   }
   onDateChange () {
     this.stocksToDisplay = this.filter.filterByDate(this.date);
+    console.log(this.stocksToDisplay);
   }
 
 }
