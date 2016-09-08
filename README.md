@@ -1,89 +1,14 @@
-# angular-webpack
+1. Create an application that shows a stock chart with stock prices over the past 6 months.
+2. Give the user an option to select three different stocks to show on the chart.
+3. Give the user an option to select the time period displayed on the chart with datepickers and shorten it using D3’s brush. This should adjust all relevant windows (see #6 below).
+4. Add an option to add and remove stocks to the chart from the full list.
+5. Give the user an option to click on any day in the chart and show the high & low prices for that day, as well as the volume traded.
+6. Have 4 different windows
+- A stock price graph over time
+- A chart showing daily high/low prices and volume traded for each stock by day
+- A table showing data for the selected stock.
+- A panel showing company details for the selected stock.
+7. You can use Bootstrap for styling, Angular Bootstrap library for components and D3.js for charts.
 
-[![Dependency Status](https://david-dm.org/preboot/angular-webpack/status.svg)](https://david-dm.org/preboot/angular-webpack#info=dependencies) [![devDependency Status](https://david-dm.org/preboot/angular-webpack/dev-status.svg)](https://david-dm.org/preboot/angular-webpack#info=devDependencies)
-
-A complete, yet simple, starter for Angular using Webpack.
-
-This workflow serves as a starting point for building Angular 1.x applications using Webpack. Should be noted that apart from the pre-installed angular package, this workflow is pretty much generic.
-
-* Heavily commented webpack configuration with reasonable defaults.
-* ES6, and ES7 support with babel.
-* Source maps included in all builds.
-* Development server with live reload.
-* Production builds with cache busting.
-* Testing environment using karma to run tests and jasmine as the framework.
-* Code coverage when tests are run.
-* No gulp and no grunt, just npm scripts.
-
->Warning: Make sure you're using the latest version of Node.js and NPM
-
-### Quick start
-
-> Clone/Download the repo then edit `app.js` inside [`/src/app/app.js`](/src/app/app.js)
-
-```bash
-# clone our repo
-$ git clone https://github.com/preboot/angular-webpack.git my-app
-
-# change directory to your app
-$ cd my-app
-
-# install the dependencies with npm
-$ npm install
-
-# start the server
-$ npm start
-```
-
-go to [http://localhost:8080](http://localhost:8080) in your browser.
-
-# Table of Contents
-
-* [Getting Started](#getting-started)
-    * [Dependencies](#dependencies)
-    * [Installing](#installing)
-    * [Running the app](#running-the-app)
-    * [Developing](#developing)
-    * [Testing](#testing)
-* [License](#license)
-
-# Getting Started
-
-## Dependencies
-
-What you need to run this app:
-* `node` and `npm` (Use [NVM](https://github.com/creationix/nvm))
-* Ensure you're running Node (`v4.1.x`+) and NPM (`2.14.x`+)
-
-## Installing
-
-* `fork` this repo
-* `clone` your fork
-* `npm install` to install all dependencies
-
-## Running the app
-
-After you have installed all dependencies you can now run the app with:
-```bash
-npm start
-```
-
-It will start a local server using `webpack-dev-server` which will watch, build (in-memory), and reload for you. The port will be displayed to you as `http://localhost:8080`.
-
-## Developing
-
-### Build files
-
-* single run: `npm run build`
-* build files and watch: `npm run watch`
-
-## Testing
-
-#### 1. Unit Tests
-
-* single run: `npm test`
-* live mode (TDD style): `npm run test-watch`
-
-# License
-
-[MIT](/LICENSE)
+Yahoo API can provide stocks historical data. Please find an example of a query below:
+http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20in%20(%27CSCO%27%2C%27MSFT%27%2C%27ADBE%27)%20and%20startDate%20%3D%20%272016-01-20%27%20and%20endDate%20%3D%20%272016-07-20%27&format=json&diagnostics=true&env=http://datatables.org/alltables.env
