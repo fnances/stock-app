@@ -22,7 +22,7 @@ const d3Charts = d3Service => ({
       });
 
     const renderGraph = data => {
-      const maxValue = d3.max(data, d => d.High);
+      const maxValue = d3.extent(data, d => d.High);
       const minValue = d3.min(data, d => d.Low);
 
     };
