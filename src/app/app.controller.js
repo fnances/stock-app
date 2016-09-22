@@ -1,10 +1,9 @@
 
 
 export default class StockAppController {
-  constructor (apiConnect, dataMining, filter) {
+  constructor (apiConnect, dataManipulation) {
     this.apiConnect = apiConnect;
-    this.dataMining = dataMining;
-    this.filter = filter;
+    this.dataManipulation = dataManipulation;
     this.stocks = [];
     this.selectedStock = "CSCO";
     this.stocksToDisplay = [];
@@ -12,10 +11,9 @@ export default class StockAppController {
   }
   $onInit () {
     this.apiConnect.getStockInfo().then(res => {
-      this.stockSymbols = this.dataMining.getStocks(res);
-      this.stocks = res;
-      this.filter.updateStocks(res);
-      this.filterStocksByNameOfCompany();
+      this.stockSymbols = this.dataManipulation.getStocks(res);
+      this.stocks = this.dataManipulation.parseDataToNumbers(res);
+      this.onStockChange();
     });
     this.date = {
       to: "",
@@ -25,10 +23,9 @@ export default class StockAppController {
     };
 
   }
-  filterStocksByNameOfCompany () {
-    this.stocksToDisplay = this.filter.filterBySymbol(this.selectedStock);
-
-    const { highestDate, lowestDate } = this.filter.getHighestAndLowestDatePossible();
+  onStockChange () {
+    this.stocksToDisplay = this.dataManipulation.filterBySymbol(this.stocks, this.selectedStock);
+    const { highestDate, lowestDate } = this.dataManipulation.getDateRangeForSelectedStock();
     this.date.maxDate = highestDate;
     this.date.minDate = lowestDate;
 
@@ -37,11 +34,10 @@ export default class StockAppController {
     }
   }
   onDateChange () {
-    this.stocksToDisplay = this.filter.filterByDate(this.date);
-    console.log(this.stocksToDisplay);
+    this.stocksToDisplay = this.dataManipulation.filterByDate(this.date);
   }
 
 }
 
 
-StockAppController.$inject = ["apiConnect", "dataMining", "filter"];
+StockAppController.$inject = ["apiConnect", "dataManipulation"];
