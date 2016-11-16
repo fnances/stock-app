@@ -1,0 +1,33 @@
+  <layout class="modal" layout="column" layout-align="center center">
+      <h3>Add stock </h3>
+      <md-input-container>
+        <label>Stock Symbol</label>
+        <input type="text" ng-model="$ctrl.state.stock">
+      </md-input-container>
+      <md-input-container>
+      <label>Date</label>
+      <input type="date" ng-model="$ctrl.state.date">
+
+      </md-input-container>
+      <md-input-container>
+        <label>Low</label>
+        <input type="text" ng-model="$ctrl.state.low">
+      </md-input-container>
+      <md-input-container>
+        <label>High</label>
+        <input type="text" ng-model="$ctrl.state.high">
+      </md-input-container>
+      <md-input-container>
+        <label>Volume</label>
+        <input type="text" ng-model="$ctrl.state.volume">
+      </md-input-container>
+      <layout layout="row" layout-align="space-between center">
+        <md-button class="md-raised" ng-click="$ctrl.addStock();">
+          Add
+        </md-button>
+        <md-button class="md-warn" ng-click="$ctrl.cancel();">
+          Cancel
+        </md-button>
+
+      </layout>
+    </layout>

@@ -1,11 +1,11 @@
 
 
-export default class DataManipulation {
+export default class StockUtils {
   constructor () {
     this.filteredBySymbol = [];
     this.dateTo = "";
     this.dateFrom = "";
-    this.dontParse = ["Date"];
+    this.dontParse = ["Date", "Symbol"];
     this.filterFunctions = {
       from: stock => stock.Date >= this.dateFrom,
       to: stock => stock.Date <= this.dateTo,
@@ -39,7 +39,7 @@ export default class DataManipulation {
     return this.filteredBySymbol;
   }
   getDateRangeForSelectedStock () {
-    const dates = this.filteredBySymbol.map(stock => stock.Date);
+    const dates = this.filteredBySymbol.map(stock => Date.parse(stock.Date));
 
     return {
       highestDate: new Date(Math.max(...dates)),
@@ -47,21 +47,21 @@ export default class DataManipulation {
     };
   }
   sortStocksByDate (stocks) {
-    const compareFunc = (a, b) => a.Date - b.Date;
+    const compareFunc = (a, b) => Date.parse(a.Date) - Date.parse(b.Date);
     return stocks.sort(compareFunc);
   }
   parseDataToNumbers (stocks) {
     const parsedData = stocks.map(stock => {
-      const parsedStock = {};
+      const parsedStock = Object.assign({}, stock);
       for (let prop in stock) {
-        if (this.dontParse.includes(stock[prop])) { return; }
-        parsedStock[prop] = this.roundTo(stock[prop], 2);
+        if (this.dontParse.includes(prop)) { continue; }
+        parsedStock[prop] = (prop === "Date") ? +new Date(stock[prop]) : this.roundTo(stock[prop], 2);
       }
       return parsedStock;
     });
     return parsedData;
   }
-  pushToNotToParse (property) {
+  avoidParsingProperty (property) {
     this.dontParse.push(property);
   }
   getStocks (stocks) {

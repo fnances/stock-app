@@ -1,11 +1,9 @@
 import angular from "angular";
-import Graph from "./Graph/graph.module";
-import DailyChart from "./DailyChart/dailychart.module";
 import CompanyDetails from "./CompanyDetails/companydetails.module";
-import d3 from "../services/d3/d3.module";
+import AddStock from "./AddStock/AddStock.module";
 
 const Components = angular
-  .module("Components", [Graph, DailyChart, CompanyDetails, d3])
+  .module("Components", [CompanyDetails, AddStock])
   .name;
 
 export default Components;

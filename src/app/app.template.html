@@ -1,14 +1,61 @@
 
+<div class="overlay" ng-show="$ctrl.state.showModal">
+  <add-stock
+    ng-show="$ctrl.state.showModal"
+    cancel="$ctrl.cancel();"
+    on-add-stock="$ctrl.addStock($event)"></add-stock>
+</div>
+
+
 <layout layout="column" layout-align="center center">
-  <label>Select stock</label>
-  <md-select ng-change="$ctrl.onStockChange();" ng-model="$ctrl.selectedStock">
-    <md-option ng-value="stock" ng-repeat="stock in $ctrl.stockSymbols">{{ stock }}</md-option>
-  </md-select>
+    <md-input-container>
+    <label>Select stock</label>
+    <md-select ng-change="$ctrl.onStockChange();" ng-model="$ctrl.selectedStock">
+      <md-option ng-value="stock" ng-repeat="stock in $ctrl.stockSymbols">{{ stock }}</md-option>
+    </md-select>
+    </md-input-container>
+    <md-button ng-click="$ctrl.showAddStock();"> Add New Stock </md-button>
+
+
   <layout layout="row" layout-align="center center">
-  <label>Date From</label>
-  <md-datepicker md-min-date="$ctrl.date.minDate" md-max-date="$ctrl.date.maxDate" ng-model="$ctrl.date.from" ng-change="$ctrl.onDateChange();"></md-datepicker>
-  <label>Date to</label>
-  <md-datepicker md-min-date="$ctrl.date.minDate" md-max-date="$ctrl.date.maxDate" ng-model="$ctrl.date.to" ng-change="$ctrl.onDateChange();"></md-datepicker>
+
+      <md-input-container>
+      <label>Date From</label>
+      <md-datepicker md-min-date="$ctrl.date.minDate" md-max-date="$ctrl.date.maxDate" ng-model="$ctrl.date.from" ng-change="$ctrl.onDateChange();">
+
+      </md-datepicker>
+      </md-input-container>
+
+    <md-input-container>
+
+    <label>Date to</label>
+    <md-datepicker
+      md-min-date="$ctrl.date.minDate"
+      md-max-date="$ctrl.date.maxDate"
+      ng-model="$ctrl.date.to"
+      ng-change="$ctrl.onDateChange();">
+    </md-datepicker>
+
+    </md-input-container>
+
   </layout>
 
-<graph class="graph-container" date="$ctrl.date" stocks="$ctrl.stocksToDisplay">
+</layout>
+
+<section class="graphs-container">
+  <md-tabs md-stretch-tabs>
+    <md-tab label="Graph">
+      <div class="graph" graph stocks="$ctrl.stocks">
+      </div>
+    </md-tab>
+    <md-tab label="Chart">
+      <div class="chart" chart stocks="$ctrl.stocks">
+      </div>
+        
+    </md-tab>
+    <md-tab label="Company Details">
+      <company-details></company-details>
+    </md-tab>
+    <md-tab></md-tab>
+  </md-tabs>
+</section>

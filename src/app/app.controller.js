@@ -10,6 +10,11 @@ export default class StockAppController {
     this.stockSymbols = [];
   }
   $onInit () {
+    this.state = {
+      showModal: false
+    };
+
+
     this.apiConnect.getStockInfo().then(res => {
       this.stockSymbols = this.dataManipulation.getStocks(res);
       this.stocks = this.dataManipulation.parseDataToNumbers(res);
@@ -22,13 +27,23 @@ export default class StockAppController {
       minDate: ""
     };
 
+
+  }
+  showAddStock () {
+    this.state.showModal = true;
+  }
+  addStock (stock) {
+    this.stocks = [...this.stocks, stock];
+  }
+  cancel () {
+    this.state.showModal = false;
+
   }
   onStockChange () {
     this.stocksToDisplay = this.dataManipulation.filterBySymbol(this.stocks, this.selectedStock);
     const { highestDate, lowestDate } = this.dataManipulation.getDateRangeForSelectedStock();
     this.date.maxDate = highestDate;
     this.date.minDate = lowestDate;
-
     if (this.date.to || this.date.from) {
       this.onDateChange();
     }
