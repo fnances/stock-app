@@ -1,7 +1,7 @@
 {
   "name": "angular-webpack-workflow",
   "version": "1.0.0",
-  "description": "A workflow for Angular made with Webpack",
+  "description": "A workflow  for Angular made with Webpack",
   "scripts": {
     "build": "rimraf dist && webpack --bail --progress --profile",
     "server": "webpack-dev-server --history-api-fallback --inline --progress",

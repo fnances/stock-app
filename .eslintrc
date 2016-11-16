@@ -37,7 +37,6 @@
         "no-eval": 2,
         "max-len": [2, 200],
         "max-lines": 0,
-        "no-bitwise": 2,
         "radix": 2,
     },
     "env": {
