@@ -2,78 +2,62 @@
 
 export default class StockUtils {
   constructor () {
-    this.filteredBySymbol = [];
-    this.dateTo = "";
-    this.dateFrom = "";
-    this.dontParse = ["Date", "Symbol"];
-    this.filterFunctions = {
-      from: stock => stock.Date >= this.dateFrom,
-      to: stock => stock.Date <= this.dateTo,
-      fromAndTo: stock => {
-        const { Date } = stock;
-        const { dateFrom, dateTo } = this;
-        return Date >= dateFrom && Date <= dateTo;
+    this.avoidProperty = ["symbol", "date"];
+    this.parseObjectToNum = this.parseObjectToNum.bind(this);
+  }
+  splitBySymbols (rawStocks) {
+    const stocks = {};
+    rawStocks.forEach(stock => {
+      const { Symbol } = stock;
+      if (!angular.isArray(stocks[Symbol])) {
+        stocks[Symbol] = [];
       }
-    };
-  }
-  filterByDate (dateRange) {
-    const { from, to } = dateRange;
-    let stocksFiltered = [];
-    const { filteredBySymbol, filterFunctions } = this;
-    this.dateFrom = from;
-    this.dateTo = to;
+      stocks[Symbol].push(this.parseObjectToNum(stock));
 
-    if(!!from && !!to) {
-      const stocksFiltered = filteredBySymbol.filter(filterFunctions["fromAndTo"]);
-      return stocksFiltered;
-    }
+    });
 
-    const filterFunction = (from) ? filterFunctions["from"] : filterFunctions["to"];
-    stocksFiltered = filteredBySymbol.filter(filterFunction);
+    const objWithSortedDatesAscending = Object
+      .keys(stocks)
+      .reduce((curr, next) => {
+        curr[next] = stocks[next].reverse();
+        return curr;
+      }, {});
 
-    return stocksFiltered;
+    return objWithSortedDatesAscending;
   }
-  filterBySymbol (stocks, stockSymbol) {
-    const filteredBySymbol = stocks.filter(stock => stock.Symbol === stockSymbol);
-    this.filteredBySymbol = this.sortStocksByDate(filteredBySymbol);
-    return this.filteredBySymbol;
+  parseObjectToNum (stock) {
+    const { roundTo } = this;
+    const newStock = {};
+    Object.keys(stock).forEach(key => {
+      let newKey = key.toLowerCase();
+
+      if (!this.avoidProperty.includes(newKey)) {
+        newStock[newKey] = roundTo(stock[key], 2);
+        return;
+      }
+      newStock[newKey] = stock[key];
+    });
+    return newStock;
   }
-  getDateRangeForSelectedStock () {
-    const dates = this.filteredBySymbol.map(stock => Date.parse(stock.Date));
+  maxAndMin (stocks) {
+    const dates = stocks.map(stock => Date.parse(stock.date));
 
     return {
-      highestDate: new Date(Math.max(...dates)),
-      lowestDate: new Date(Math.min(...dates))
+      maxDate: new Date(Math.max(...dates)),
+      minDate: new Date(Math.min(...dates))
     };
   }
+  filterDateFrom (stocks, from) {
+    return stocks.filter(stock => Date.parse(stock.date) >= from);
+  }
+  filterDateTo (stocks, to) {
+    return stocks.filter(stock => Date.parse(stock.date) <= to);
+  }
+
   sortStocksByDate (stocks) {
-    const compareFunc = (a, b) => Date.parse(a.Date) - Date.parse(b.Date);
-    return stocks.sort(compareFunc);
-  }
-  parseDataToNumbers (stocks) {
-    const parsedData = stocks.map(stock => {
-      const parsedStock = Object.assign({}, stock);
-      for (let prop in stock) {
-        if (this.dontParse.includes(prop)) { continue; }
-        parsedStock[prop] = (prop === "Date") ? +new Date(stock[prop]) : this.roundTo(stock[prop], 2);
-      }
-      return parsedStock;
-    });
-    return parsedData;
-  }
-  avoidParsingProperty (property) {
-    this.dontParse.push(property);
-  }
-  getStocks (stocks) {
-    let stockOptions = [];
-    stocks.forEach(stock => {
-      const { Symbol } = stock;
-      if (!stockOptions.includes(Symbol)) {
-        stockOptions.push(Symbol);
-      }
-    });
-    this.stockOptions = stockOptions;
-    return stockOptions;
+    const compareFunc = (a, b) => Date.parse(b.Date) - Date.parse(a.Date);
+
+    return [...stocks].sort(compareFunc);
   }
   roundTo (num, places) {
     return +(Math.round(num + "e+" + places)  + "e-" + places);

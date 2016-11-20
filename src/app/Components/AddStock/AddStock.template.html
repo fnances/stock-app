@@ -1,31 +1,43 @@
   <layout class="modal" layout="column" layout-align="center center">
       <h3>Add stock </h3>
-      <md-input-container>
+      <md-input-container md-is-error="$ctrl.state.symbol.length < 1">
         <label>Stock Symbol</label>
-        <input type="text" ng-model="$ctrl.state.stock">
+        <input required type="text" ng-model="$ctrl.state.symbol">
       </md-input-container>
-      <md-input-container>
+      <md-input-container md-is-error="$ctrl.state.date.length < 1" >
       <label>Date</label>
-      <input type="date" ng-model="$ctrl.state.date">
+      <input required type="text" placeholder="YYYY-MM-DD" ng-model="$ctrl.state.date">
 
       </md-input-container>
-      <md-input-container>
+      <md-input-container md-is-error="$ctrl.state.low.length < 1">
         <label>Low</label>
-        <input type="text" ng-model="$ctrl.state.low">
+        <input required type="number" ng-model="$ctrl.state.low">
       </md-input-container>
-      <md-input-container>
+      <md-input-container md-is-error="$ctrl.state.high.length < 1">
         <label>High</label>
-        <input type="text" ng-model="$ctrl.state.high">
+        <input required type="number" ng-model="$ctrl.state.high">
       </md-input-container>
-      <md-input-container>
+      <md-input-container md-is-error="$ctrl.state.open.length < 1">
+        <label>Open</label>
+        <input required type="number" ng-model="$ctrl.state.open">
+      </md-input-container>
+      <md-input-container md-is-error="$ctrl.state.close.length < 1">
+        <label>Close</label>
+        <input required type="number" ng-model="$ctrl.state.close">
+      </md-input-container>
+      <md-input-container md-is-error="$ctrl.state.adjClose.length < 1">
+        <label>Adjusted Closing Price</label>
+        <input required type="number" ng-model="$ctrl.state.adjClose">
+      </md-input-container>
+      <md-input-container md-is-error="$ctrl.state.volume.length < 1">
         <label>Volume</label>
-        <input type="text" ng-model="$ctrl.state.volume">
+        <input required type="number" ng-model="$ctrl.state.volume">
       </md-input-container>
       <layout layout="row" layout-align="space-between center">
         <md-button class="md-raised" ng-click="$ctrl.addStock();">
           Add
         </md-button>
-        <md-button class="md-warn" ng-click="$ctrl.cancel();">
+        <md-button class="md-warn" ng-click="$ctrl.onCancel();">
           Cancel
         </md-button>
 

@@ -6,12 +6,19 @@
     on-add-stock="$ctrl.addStock($event)"></add-stock>
 </div>
 
+<div class="overlay" ng-show="$ctrl.state.showDateWarning">
+  <div class="modal date-warn">
+    <h4 class="warn">Please provide valid date. Date from must be lower than Date to.</h4>
+    <md-button ng-click="$ctrl.state.showDateWarning = false">Dismiss</md-button>
+  </div>
+</div>
+
 
 <layout layout="column" layout-align="center center">
     <md-input-container>
     <label>Select stock</label>
-    <md-select ng-change="$ctrl.onStockChange();" ng-model="$ctrl.selectedStock">
-      <md-option ng-value="stock" ng-repeat="stock in $ctrl.stockSymbols">{{ stock }}</md-option>
+    <md-select ng-change="$ctrl.onStockChange();" ng-model="$ctrl.state.selectedSymbol">
+      <md-option ng-value="stock" ng-repeat="stock in $ctrl.state.stockSymbols">{{ stock }}</md-option>
     </md-select>
     </md-input-container>
     <md-button ng-click="$ctrl.showAddStock();"> Add New Stock </md-button>
@@ -21,8 +28,11 @@
 
       <md-input-container>
       <label>Date From</label>
-      <md-datepicker md-min-date="$ctrl.date.minDate" md-max-date="$ctrl.date.maxDate" ng-model="$ctrl.date.from" ng-change="$ctrl.onDateChange();">
-
+      <md-datepicker
+        md-min-date="$ctrl.state.date.minDate"
+        md-max-date="$ctrl.state.date.maxDate"
+        ng-model="$ctrl.state.date.from"
+        ng-change="$ctrl.onDateChange();">
       </md-datepicker>
       </md-input-container>
 
@@ -30,9 +40,9 @@
 
     <label>Date to</label>
     <md-datepicker
-      md-min-date="$ctrl.date.minDate"
-      md-max-date="$ctrl.date.maxDate"
-      ng-model="$ctrl.date.to"
+      md-min-date="$ctrl.state.date.minDate"
+      md-max-date="$ctrl.state.date.maxDate"
+      ng-model="$ctrl.state.date.to"
       ng-change="$ctrl.onDateChange();">
     </md-datepicker>
 
@@ -40,22 +50,23 @@
 
   </layout>
 
+  <layout max-width="100%" align>
+    <md-button ng-click="$ctrl.selectTab('graph')">GRAPH</md-button>
+    <md-button ng-click="$ctrl.selectTab('chart')">CHART</md-button>
+    <md-button ng-click="$ctrl.selectTab('companyDetails')">COMPANY DETAILS</md-button>
+  </layout>
 </layout>
 
 <section class="graphs-container">
-  <md-tabs md-stretch-tabs>
-    <md-tab label="Graph">
-      <div class="graph" graph stocks="$ctrl.stocks">
-      </div>
-    </md-tab>
-    <md-tab label="Chart">
-      <div class="chart" chart stocks="$ctrl.stocks">
-      </div>
-        
-    </md-tab>
-    <md-tab label="Company Details">
-      <company-details></company-details>
-    </md-tab>
-    <md-tab></md-tab>
-  </md-tabs>
+  <div
+    ng-show="$ctrl.state.selectedTab === 'graph'"
+    graph
+    class="svg-container graph-container"
+    stocks="$ctrl.state.stocksToDisplay">
+  </div>
+
+   <!-- <div class="svg-container" chart stocks="$ctrl.state.stocksToDisplay">
+  </div> -->
+
+  <company-details ng-show="$ctrl.state.selectedTab === 'companyDetails'"></company-details>
 </section>

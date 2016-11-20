@@ -10,5 +10,6 @@
 - A panel showing company details for the selected stock.
 7. You can use Bootstrap for styling, Angular Bootstrap library for components and D3.js for charts.
 
+
 Yahoo API can provide stocks historical data. Please find an example of a query below:
 http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20in%20(%27CSCO%27%2C%27MSFT%27%2C%27ADBE%27)%20and%20startDate%20%3D%20%272016-01-20%27%20and%20endDate%20%3D%20%272016-07-20%27&format=json&diagnostics=true&env=http://datatables.org/alltables.env

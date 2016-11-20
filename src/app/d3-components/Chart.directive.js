@@ -1,29 +1,57 @@
 /*eslint-disable*/
 
- const Chart = d3Service => ({
+ const Chart = (d3Service, $window)=> ({
   restrict: "A",
   link ($scope, $element, $attrs) {
     let d3;
     let svg;
-    let initialRenderChecker = 0;
-    const graphContainer = document.getElementsByClassName("graph-container")[0];
-    const svgAttributes = {
-      width: "",
-      height: "",
-      margin: {
-        right: 20,
-        left: 20,
-        top: 20,
-        bottom: 20
-      }
+    const el = $element[0];
+
+    const margin = {
+      left: 20,
+      right: 20,
+      top: 20,
+      bottom: 20
     };
 
-    d3Service.d3().then(d3Instance => {
+    const stocksChanged = (newValue, oldValue) => {
+      if (newValue.length && oldValue.length) {
+        update(newValue);
+        return;
+      }
+      scalesAndAxes = render(newValue);
+    };
 
-    });
+    const setWatchers = () => {
+      window.onresize = () => {
+        $scope.$apply();
+     };
+     $scope.$watch(
+        $attrs.stocks,
+        (newValue, oldValue) => stocksChanged(newValue, oldValue)
+      );
+
+     $scope.$watch(
+       () => angular.element($window)[0].innerWidth,
+       () => render(stocks)
+     );
+  };
+
+  d3Service.d3().then(d3Instance => {
+    d3 = d3Instance;
+    color = d3.scaleOrdinal(d3.schemeCategory10);
+    svg = d3.select(el).append("svg")
+      .style("width", "100%")
+      .style("background-color", "lightblue");
+    setWatchers();
+ });
+
+
+
+
   }
 });
 
-Chart.$inject = ["d3Service"];
+Chart.$inject = ["d3Service", "$window"];
 
 export default Chart;

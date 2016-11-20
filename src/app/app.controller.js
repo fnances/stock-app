@@ -1,58 +1,98 @@
 
 
 export default class StockAppController {
-  constructor (apiConnect, dataManipulation) {
+  constructor (apiConnect, stockUtils) {
     this.apiConnect = apiConnect;
-    this.dataManipulation = dataManipulation;
-    this.stocks = [];
-    this.selectedStock = "CSCO";
-    this.stocksToDisplay = [];
-    this.stockSymbols = [];
+    this.stockUtils = stockUtils;
+
+    this.state = {
+      showDateWarning: false,
+      showModal: false,
+      selectedTab : "graph",
+      stocks: [],
+      stockSymbols: [],
+      selectedSymbol: "CSCO",
+      stocksToDisplay: [],
+      date: {
+        to: "",
+        from: "",
+        maxDate: "",
+        minDate: ""
+      }
+    };
   }
   $onInit () {
-    this.state = {
-      showModal: false
-    };
-
+    const { selectedSymbol } = this.state;
 
     this.apiConnect.getStockInfo().then(res => {
-      this.stockSymbols = this.dataManipulation.getStocks(res);
-      this.stocks = this.dataManipulation.parseDataToNumbers(res);
-      this.onStockChange();
+      this.state.stocks = this.stockUtils.splitBySymbols(res);
+      this.state.stockSymbols = Object.keys(this.state.stocks);
+      this.state.stocksToDisplay = this.state.stocks[selectedSymbol];
+      this.setNewMaxMinDate();
     });
-    this.date = {
-      to: "",
-      from: "",
-      maxDate: "",
-      minDate: ""
-    };
 
+  }
+  setNewMaxMinDate () {
+    const { maxAndMin } = this.stockUtils;
 
+    const { maxDate, minDate } = maxAndMin(this.state.stocksToDisplay);
+
+    this.state.date = Object.assign({}, this.state.date, { maxDate, minDate });
+    this.state.date.to = new Date(maxDate);
+    this.state.date.from = new Date(minDate);
+
+  }
+  selectTab (tab) {
+    this.state.selectedTab = tab;
+  }
+  onDateChange () {
+    const { from, to } = this.state.date;
+    const { validDate, state: { stocks, selectedSymbol } } = this;
+    const { filterDateFrom, filterDateTo } = this.stockUtils;
+
+    const selectedStock = stocks[selectedSymbol];
+
+    if (!validDate(from, to)) {
+      this.state.showDateWarning = true;
+      this.setNewMaxMinDate();
+      return;
+    }
+
+    if (from) {
+      this.state.stocksToDisplay = filterDateFrom(selectedStock, from);
+    }
+    if (to) {
+      this.state.stocksToDisplay = filterDateTo(this.state.stocksToDisplay, to);
+    }
+  }
+  validDate (from, to) {
+    if (from && to) {
+      return (Date.parse(from) <= Date.parse(to));
+    }
+  }
+  addStock (stock) {
+    const { symbol } = stock;
+    const { stocks, selectedSymbol } = this.state;
+
+    const sortStocksByDate = this.stockUtils.sortStocksByDate;
+    this.state.stocks[symbol] = sortStocksByDate([...stocks[symbol], stock]);
+    if (symbol === selectedSymbol) {
+      this.state.stocksToDisplay = this.state.stocks[symbol];
+    }
+    this.setNewMaxMinDate();
   }
   showAddStock () {
     this.state.showModal = true;
   }
-  addStock (stock) {
-    this.stocks = [...this.stocks, stock];
-  }
   cancel () {
     this.state.showModal = false;
-
   }
   onStockChange () {
-    this.stocksToDisplay = this.dataManipulation.filterBySymbol(this.stocks, this.selectedStock);
-    const { highestDate, lowestDate } = this.dataManipulation.getDateRangeForSelectedStock();
-    this.date.maxDate = highestDate;
-    this.date.minDate = lowestDate;
-    if (this.date.to || this.date.from) {
-      this.onDateChange();
-    }
+    const { stocks, selectedSymbol } = this.state;
+    this.state.stocksToDisplay = stocks[selectedSymbol];
+    this.setNewMaxMinDate();
   }
-  onDateChange () {
-    this.stocksToDisplay = this.dataManipulation.filterByDate(this.date);
-  }
-
 }
 
 
-StockAppController.$inject = ["apiConnect", "dataManipulation"];
+StockAppController.$inject = ["apiConnect", "stockUtils"];

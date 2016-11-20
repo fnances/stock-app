@@ -1,3 +1,10 @@
+
+body {
+  background-color: #dddfe6;
+}
+
+//#d9e1e8
+
 .graphs-container {
   width: 100%;
   display: flex;
@@ -5,10 +12,6 @@
   justify-content: center;
   align-content: center;
   margin: 20px;
-}
-svg {
-  width: 100%;
-  height: 100%;
 }
 path {
     stroke: steelblue;
@@ -22,6 +25,12 @@ text.shadow {
     opacity: 0.9;
 }
 
+.graph-path {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 2px;
+}
+
 .axis path,
 .axis line {
     fill: none;
@@ -29,7 +38,19 @@ text.shadow {
     stroke-width: 1;
     shape-rendering: crispEdges;
 }
-
+.date-warn {
+  z-index: 9999;
+  width: 600px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+}
+.warn {
+  padding: 15px;
+  text-align: center;
+}
 .modal {
   z-index: 250;
   background-color: white;
@@ -49,4 +70,16 @@ text.shadow {
   background-color: rgba(0, 0, 0, 0.6);
   width: 100vw;
   height: 100vh;
+}
+
+.graphs-container {
+  height: 45%;
+  width: 85%;
+  margin: 0 auto;
+
+}
+
+.svg-container {
+  height: 100%;
+  width: 100%;
 }
