@@ -1,0 +1,21 @@
+<layout layout="row" layout-align="center center">
+
+  <layout class="stock-table-details" layout="column" layout-align="center center">
+      <p>Symbol</p>
+      <p>Date</p>
+      <p>Open</p>
+      <p>High</p>
+      <p>Low</p>
+      <p>Close</p>
+      <p>Volume</p>
+      <p>Adjusted Closing Price</p>
+  </layout>
+
+  <layout layout="column" layout-align="center center">
+    <p ng-repeat="key in $ctrl.stock">{{key}}</p>
+  </layout>
+
+  <md-button class="md-warn" ng-click="$ctrl.remove();">
+    REMOVE
+  </md-button>
+</layout>

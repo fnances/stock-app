@@ -8,7 +8,7 @@ export default class AddStockController {
       low: "",
       open: "",
       close: "",
-      adjClose: "",
+      adj_close: "",
       high: "",
       volume: ""
     };
@@ -22,12 +22,10 @@ export default class AddStockController {
     if (!formFilled) { return; }
 
     this.onAddStock({ $event: this.state });
-    this.state = Object.assign({}, this.initState);
-
     this.cancel();
   }
   onCancel () {
-    this.state = Object.assign({}, this.initState);
+    // this.state = Object.assign({}, this.initState);
 
     this.cancel();
   }

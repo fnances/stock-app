@@ -59,7 +59,6 @@ text.shadow {
   left: calc(50% - 250px/2);
   top: 45px;
 }
-
 .overlay {
   position: absolute;
   z-index: 160;
@@ -72,7 +71,7 @@ text.shadow {
   height: 100vh;
 }
 
-.graphs-container {
+.d3-container {
   height: 45%;
   width: 85%;
   margin: 0 auto;
@@ -82,4 +81,16 @@ text.shadow {
 .svg-container {
   height: 100%;
   width: 100%;
+}
+
+.hide-svg {
+  opacity: 0;
+  height: 45%;
+  width: 85%;
+  position: absolute;
+  z-index: -9999;
+}
+
+.stock-table-details > p {
+  font-weight: bold;
 }

@@ -1,5 +1,5 @@
 import angular from "angular";
-import CompanyDetailsComponent from "./companydetails.component";
+import CompanyDetailsComponent from "./CompanyDetails.component";
 
 
 const CompanyDetails = angular
@@ -7,4 +7,4 @@ const CompanyDetails = angular
   .component("companyDetails", CompanyDetailsComponent)
   .name;
 
-  export default CompanyDetails;
+export default CompanyDetails;

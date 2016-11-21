@@ -1,1 +1,13 @@
-<h1>im company details</h1>
+<layout layout="column" layout-align="center center">
+  <h3>{{$ctrl.company}}</h3>
+
+  <h3>Average Stock Volume ~{{$ctrl.companyAverageVolume}}</h3>
+
+  <h4>Stocks since {{$ctrl.firstStock.date}} to {{$ctrl.lastStock.date}} - {{$ctrl.companyStocks.length}}</h4>
+  <h4>Open Price in {{$ctrl.firstStock.date}} - {{$ctrl.firstStock.open | currency:"$"}}  </h4>
+
+  <h4>Open Price in {{$ctrl.lastStock.date}} - {{$ctrl.lastStock.open | currency:"$"}}  </h4>
+
+  <h4>Close Price in {{$ctrl.firstStock.date}} - {{$ctrl.firstStock.close | currency:"$"}}  </h4>
+  <h4>Close Price in {{$ctrl.lastStock.date}} - {{$ctrl.lastStock.close | currency:"$"}} </h4>
+</layout>

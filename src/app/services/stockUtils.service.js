@@ -18,9 +18,9 @@ export default class StockUtils {
 
     const objWithSortedDatesAscending = Object
       .keys(stocks)
-      .reduce((curr, next) => {
-        curr[next] = stocks[next].reverse();
-        return curr;
+      .reduce((obj, key) => {
+        obj[key] = stocks[key].reverse();
+        return obj;
       }, {});
 
     return objWithSortedDatesAscending;

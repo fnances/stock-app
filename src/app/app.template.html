@@ -17,7 +17,7 @@
 <layout layout="column" layout-align="center center">
     <md-input-container>
     <label>Select stock</label>
-    <md-select ng-change="$ctrl.onStockChange();" ng-model="$ctrl.state.selectedSymbol">
+    <md-select ng-change="$ctrl.onStockSelect();" ng-model="$ctrl.state.selectedSymbol">
       <md-option ng-value="stock" ng-repeat="stock in $ctrl.state.stockSymbols">{{ stock }}</md-option>
     </md-select>
     </md-input-container>
@@ -51,22 +51,51 @@
   </layout>
 
   <layout max-width="100%" align>
-    <md-button ng-click="$ctrl.selectTab('graph')">GRAPH</md-button>
-    <md-button ng-click="$ctrl.selectTab('chart')">CHART</md-button>
-    <md-button ng-click="$ctrl.selectTab('companyDetails')">COMPANY DETAILS</md-button>
+    <md-button
+      ng-class="{'md-primary': $ctrl.state.selectedTab === 'graph' }"
+      ng-click="$ctrl.selectTab('graph')">GRAPH</md-button>
+    <md-button
+      ng-class="{'md-primary': $ctrl.state.selectedTab === 'chart' }"
+      ng-click="$ctrl.selectTab('chart')">CHART</md-button>
+    <md-button
+      ng-class="{'md-primary': $ctrl.state.selectedTab === 'companyDetails' }"
+      ng-click="$ctrl.selectTab('companyDetails')">COMPANY DETAILS</md-button>
+      <md-button
+        ng-show="$ctrl.state.clickedStock"
+        ng-class="{'md-primary': $ctrl.state.selectedTab === 'companyDetails' }"
+        ng-click="$ctrl.selectTab('table')">STOCK TABLE</md-button>
   </layout>
 </layout>
 
-<section class="graphs-container">
+<section class="d3-container">
   <div
-    ng-show="$ctrl.state.selectedTab === 'graph'"
     graph
-    class="svg-container graph-container"
+    ng-class="{ 'hide-svg': $ctrl.state.selectedTab !== 'graph' }"
+    class="svg-container graph"
     stocks="$ctrl.state.stocksToDisplay">
   </div>
 
-   <!-- <div class="svg-container" chart stocks="$ctrl.state.stocksToDisplay">
-  </div> -->
+   <div
+     chart
+     adjust-date="$ctrl.adjustDate(date)"
+     on-stock-click="$ctrl.onStockClick(stock)"
+     ng-class="{ 'hide-svg': $ctrl.state.selectedTab !== 'chart' }"
+     class="svg-container chart"
+     stocks="$ctrl.state.stocksToDisplay">
+  </div>
 
-  <company-details ng-show="$ctrl.state.selectedTab === 'companyDetails'"></company-details>
+  <company-details
+    company="$ctrl.state.selectedSymbol"
+    company-stocks="$ctrl.state.stocksToDisplay"
+    ng-show="$ctrl.state.selectedTab === 'companyDetails'">
+  </company-details>
+  <table-stock
+    remove="$ctrl.removeStock();"
+    stock="$ctrl.state.clickedStock"
+    ng-show="$ctrl.state.selectedTab === 'table' ">
+  </table-stock>
 </section>
+
+
+<!--  -->
+<!-- ng-class="{ 'hide-svg': $ctrl.state.selectedTab !== 'graph' }" -->

@@ -22,8 +22,8 @@ const Graph = (d3Service, $window) => ({
     const getMinAndMaxFromEntireStock = stocks => {
 
       const minAndMax = Object.keys(stocks[0])
+        .filter(key => !ignoreKeys.includes(key))
         .reduce((values, key) => {
-          if (ignoreKeys.includes(key)) { return values; }
 
           let [min, max] = d3.extent(stocks, d => d[key]);
           return [...values, min, max];
@@ -33,7 +33,7 @@ const Graph = (d3Service, $window) => ({
       return d3.extent(minAndMax, d => d);
     };
 
-    const createPathsForEntireStock = (g, x, y, parseTime, stocks, key, i) => {
+    const createGraph = (stocks, key, i, g, x, y, parseTime) => {
       const valueline = d3.line()
         .x(d => x(parseTime(d.date)))
         .y(d => y(d[key]));
@@ -42,7 +42,7 @@ const Graph = (d3Service, $window) => ({
 
       g.append("text")
         .attr("x", (i + 1) * 45)
-        .attr("y", 5)
+        .attr("y", -15)
         .style("font-size", 10)
         .style("fill", color(i))
         .text(`${key.toUpperCase()}`);
@@ -70,7 +70,7 @@ const Graph = (d3Service, $window) => ({
       const { top, left, right, bottom } = margin;
 
       const width = d3.select(el).node().offsetWidth - left - right;
-      const height = 450 - top - bottom;
+      const height = d3.select(el).node().offsetHeight - top - bottom;
 
       const parseTime = d3.timeParse("%Y-%m-%d");
 
@@ -96,8 +96,8 @@ const Graph = (d3Service, $window) => ({
         .filter(key => !ignoreKeys.includes(key))
         .map((key, i) => {
 
-          const pass = [g, xTimeScale, yLinearScale, parseTime, stocks, key, i];
-          const graph = createPathsForEntireStock(...pass);
+          const pass = [stocks, key, i, g, xTimeScale, yLinearScale, parseTime];
+          const graph = createGraph(...pass);
 
           return graph;
 
@@ -144,10 +144,9 @@ const Graph = (d3Service, $window) => ({
       yLinearScale.domain([min, max]);
 
       g = g.transition();
-
       graphs.forEach(({ graphSelector, valueline } )=> {
         g.select(`.${graphSelector}`)
-          .duration(500)
+          .duration(1000)
           .attr("d", valueline(stocks));
       });
 
@@ -179,7 +178,11 @@ const Graph = (d3Service, $window) => ({
 
     $scope.$watch(
       () => angular.element($window)[0].innerWidth,
-      () => render(stocks)
+      () => scalesAndAxes = render(stocks)
+    );
+    $scope.$watch(
+      () => angular.element($window)[0].innerHeight,
+      () => scalesAndAxes = render(stocks)
     );
  };
 
@@ -188,6 +191,7 @@ const Graph = (d3Service, $window) => ({
    color = d3.scaleOrdinal(d3.schemeCategory10);
    svg = d3.select(el).append("svg")
      .style("width", "100%")
+     .style("height", "100%")
      .style("background-color", "#dddfe6");
    setWatchers();
 });
