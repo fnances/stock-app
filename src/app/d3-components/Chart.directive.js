@@ -8,6 +8,7 @@
     let svg;
     let stocks = [];
 
+    let firstRender = true;
     let parseTime;
 
     let width;
@@ -16,6 +17,12 @@
     let tooltip;
     let scalesAndAxes = {};
 
+    const margin = {
+       top: 20,
+       right: 30,
+       bottom: 20,
+       left: 30
+    };
 
     const { right, top, left, bottom } = margin;
 
@@ -87,10 +94,10 @@
     };
 
     const render = newStocks => {
-
       svg.select("g").remove("*");
 
       if (!newStocks.length) { return; }
+      console.log("render");
 
       stocks = newStocks;
 
@@ -165,6 +172,7 @@
     };
 
     const update = newStocks => {
+      console.log("update");
       let { g, xTimeScale, yScale, xScale} = scalesAndAxes;
 
       stocks = newStocks;
@@ -175,8 +183,8 @@
       const datesExtent = d3.extent(stocks, d => parseTime(d.date));
 
       const average = getAverage(stocks);
-
-      color.domain([0, average]);
+      color
+        .domain([0, average]);
 
       xScale
         .domain(dates);
@@ -240,19 +248,23 @@
     };
 
     const stocksChanged = (newValue, oldValue) => {
-      if (newValue.length && oldValue.length) {
-        update(newValue);
+      if (firstRender) {
+        firstRender = false;
+        scalesAndAxes = render(newValue);
         return;
       }
-      scalesAndAxes = render(newValue);
+      update(newValue);
     };
 
     const setWatchers = () => {
-      
+
+      window.onresize = () => {
+        $scope.$apply();
+      };
+
      $scope.$watch(
         $attrs.stocks,
-        (newValue, oldValue) => stocksChanged(newValue, oldValue),
-        true
+        (newValue, oldValue) => stocksChanged(newValue, oldValue)
       );
 
      $scope.$watch(

@@ -75,21 +75,14 @@
     stocks="$ctrl.state.stocksToDisplay">
   </div>
 
-   <!-- <div
+   <div
      chart
      adjust-date="$ctrl.adjustDate(date)"
      on-stock-click="$ctrl.onStockClick(stock)"
      ng-class="{ 'hide-svg': $ctrl.state.selectedTab !== 'chart' }"
      class="svg-container chart"
      stocks="$ctrl.state.stocksToDisplay">
-  </div> -->
-
-  <chart-d3
-    class="svg-container"
-    ng-class="{ 'hide-svg': $ctrl.state.selectedTab !== 'chart' }"
-    adjust-date="$ctrl.adjustDate($event)"
-    on-stock-click="$ctrl.onStockClick($event)"
-    stocks="$ctrl.state.stocksToDisplay"></chart-d3>
+  </div>
 
   <company-details
     company="$ctrl.state.selectedSymbol"
@@ -102,7 +95,3 @@
     ng-show="$ctrl.state.selectedTab === 'table' ">
   </table-stock>
 </section>
-
-
-<!-- ng-class="{ 'hide-svg': $ctrl.state.selectedTab !== 'chart' }" -->
-<!-- ng-class="{ 'hide-svg': $ctrl.state.selectedTab !== 'graph' }" -->
