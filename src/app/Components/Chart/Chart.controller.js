@@ -201,7 +201,7 @@ export default class ChartController {
     };
   }
   update (stocks) {
-    const { d3, color, parseTime, getAverage, minimumStocks, getDimensions} = this;
+    const { d3, color, parseTime, getAverage, minimumStocks } = this;
     const { g, yAxis, xAxis, xTimeScale, xScale, yScale, height } = this.scalesAndAxes;
 
     const [min, max] = d3.extent(stocks, d => d.high);
@@ -249,11 +249,7 @@ export default class ChartController {
         .attr("x", d => xScale(parseTime(d.date)))
         .transition()
         .duration((d, i) => i * 35)
-        .attr("fill", d => {
-          if (d.color) { return d.color; }
-          d.color = color(d.high);
-          return d.color;
-        })
+        .attr("fill", d => color(d.high))
         .attr("y", d => yScale(d.high))
         .attr("width", () => xScale.bandwidth())
         .attr("height", d => height - yScale(d.high));
@@ -291,6 +287,7 @@ export default class ChartController {
   createBars (sel, stocks, xTimeScale, yScale, xScale, height) {
     const { color, parseTime, events } = this;
     const {mouseover, mouseout, click} = events();
+
     sel.selectAll("rect")
       .on("mouseover", function (d) {
         const ctx = this;
@@ -304,11 +301,7 @@ export default class ChartController {
       .append("rect")
         .attr("x", d => xScale(parseTime(d.date)))
         .attr("class", "bar")
-          .attr("fill", d => {
-            if (d.color) { return d.color; }
-            d.color = color(d.high);
-            return d.color;
-          })
+          .attr("fill", d => color(d.high))
           .attr("y", d => yScale(d.high))
           .attr("width", () => xScale.bandwidth())
           .attr("height", d => height - yScale(d.high));

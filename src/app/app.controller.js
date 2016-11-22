@@ -24,6 +24,9 @@ export default class StockAppController {
         minDate: ""
       }
     };
+    this.removeStock = this.removeStock.bind(this);
+    this.filterByDate = this.filterByDate.bind(this);
+
   }
   $onInit () {
     const { selectedSymbol } = this.state;
@@ -47,6 +50,7 @@ export default class StockAppController {
     const { selectedSymbol } = this.state;
     const { from, to} = this.state.date;
     const { maxDate, minDate } = maxAndMin(this.state.stocks[selectedSymbol]);
+
 
     this.state.date.maxDate = maxDate;
     this.state.date.minDate = minDate;
@@ -93,18 +97,19 @@ export default class StockAppController {
     return true;
   }
   removeStock () {
-    const { stockEquals } = this;
-    const { stocks, clickedStock, selectedSymbol } = this.state;
+    const { stockEquals, filterByDate } = this;
+    const { stocks, clickedStock } = this.state;
     const { symbol } = clickedStock;
+
 
     const newStocksForSymbol = stocks[symbol]
       .filter(stock => !stockEquals(stock, clickedStock));
 
-    this.state.stocks[symbol] = newStocksForSymbol;
-    this.state.stocksToDisplay = [...this.state.stocks[selectedSymbol]];
+    this.state.stocksToDisplay = filterByDate(newStocksForSymbol);
 
     this.state.clickedStock = "";
     this.state.selectedTab = "chart";
+    this.setNewMaxMinDate();
 
   }
   showAddStock () {
