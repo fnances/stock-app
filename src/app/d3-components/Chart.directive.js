@@ -97,7 +97,6 @@
       svg.select("g").remove("*");
 
       if (!newStocks.length) { return; }
-      console.log("render");
 
       stocks = newStocks;
 
@@ -172,7 +171,6 @@
     };
 
     const update = newStocks => {
-      console.log("update");
       let { g, xTimeScale, yScale, xScale} = scalesAndAxes;
 
       stocks = newStocks;
