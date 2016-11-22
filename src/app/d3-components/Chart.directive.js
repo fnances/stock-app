@@ -15,12 +15,7 @@
 
     let tooltip;
     let scalesAndAxes = {};
-    const margin = {
-      right: 30,
-      top: 10,
-      left: 30,
-      bottom: 40
-    };
+
 
     const { right, top, left, bottom } = margin;
 
@@ -253,9 +248,7 @@
     };
 
     const setWatchers = () => {
-      window.onresize = () => {
-        $scope.$apply();
-     };
+      
      $scope.$watch(
         $attrs.stocks,
         (newValue, oldValue) => stocksChanged(newValue, oldValue),

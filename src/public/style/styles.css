@@ -1,6 +1,6 @@
 
 body {
-  background-color: #dddfe6;
+  background-color: white;
 }
 
 //#d9e1e8
@@ -90,7 +90,6 @@ text.shadow {
   position: absolute;
   z-index: -9999;
 }
-
 .stock-table-details > p {
   font-weight: bold;
 }

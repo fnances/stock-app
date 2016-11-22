@@ -3,12 +3,10 @@
 const Graph = (d3Service, $window) => ({
   restrict: "A",
   link ($scope, $element, $attrs) {
-    let d3;
     let stocks = [];
-    let svg;
-    let color;
     const ignoreKeys = ["symbol", "date", "volume", ];
 
+    let initRender = true;
     let scalesAndAxes = {};
 
     const el = $element[0];
@@ -19,7 +17,42 @@ const Graph = (d3Service, $window) => ({
       bottom: 30
     };
 
-    const getMinAndMaxFromEntireStock = stocks => {
+    const d3 = $window.d3;
+    const parseTime = d3.timeParse("%Y-%m-%d");
+    const color = d3.scaleOrdinal(d3.schemeCategory10);
+    const svg = d3.select(el).append("svg")
+       .style("width", "100%")
+       .style("height", "100%")
+       .style("background-color", "white");
+
+    const stocksChanged = (newValue, oldValue) => {
+      if (initRender) {
+        initRender = false;
+        scalesAndAxes = render(newValue);
+        return;
+      }
+      update(newValue);
+    };
+
+     window.onresize = () => {
+        $scope.$apply();
+     };
+     $scope.$watch(
+        $attrs.stocks,
+        (newValue, oldValue) => stocksChanged(newValue, oldValue)
+      );
+
+     $scope.$watch(
+       () => angular.element($window)[0].innerWidth,
+       () => scalesAndAxes = render(stocks)
+     );
+     $scope.$watch(
+       () => angular.element($window)[0].innerHeight,
+       () => scalesAndAxes = render(stocks)
+     );
+
+
+  const getMinAndMaxFromEntireStock = stocks => {
 
       const minAndMax = Object.keys(stocks[0])
         .filter(key => !ignoreKeys.includes(key))
@@ -71,8 +104,6 @@ const Graph = (d3Service, $window) => ({
 
       const width = d3.select(el).node().offsetWidth - left - right;
       const height = d3.select(el).node().offsetHeight - top - bottom;
-
-      const parseTime = d3.timeParse("%Y-%m-%d");
 
       const [ min, max ] = getMinAndMaxFromEntireStock(stocks);
       const dateExtent = d3.extent(stocks, d => parseTime(d.date));
@@ -134,8 +165,7 @@ const Graph = (d3Service, $window) => ({
         xTimeScale,
         yLinearScale,
         xAxis,
-        yAxis,
-        parseTime } = scalesAndAxes;
+        yAxis } = scalesAndAxes;
 
       const dateExtent = d3.extent(stocks, d => parseTime(d.date));
       const [ min, max ] = getMinAndMaxFromEntireStock(stocks);
@@ -159,42 +189,10 @@ const Graph = (d3Service, $window) => ({
         .call(d3.axisLeft(yLinearScale));
     };
 
-   const stocksChanged = (newValue, oldValue) => {
-     if (newValue.length && oldValue.length) {
-       update(newValue);
-       return;
-     }
-     scalesAndAxes = render(newValue);
-   };
 
-   const setWatchers = () => {
-     window.onresize = () => {
-       $scope.$apply();
-    };
-    $scope.$watch(
-       $attrs.stocks,
-       (newValue, oldValue) => stocksChanged(newValue, oldValue)
-     );
 
-    $scope.$watch(
-      () => angular.element($window)[0].innerWidth,
-      () => scalesAndAxes = render(stocks)
-    );
-    $scope.$watch(
-      () => angular.element($window)[0].innerHeight,
-      () => scalesAndAxes = render(stocks)
-    );
- };
 
- d3Service.d3().then(d3Instance => {
-   d3 = d3Instance;
-   color = d3.scaleOrdinal(d3.schemeCategory10);
-   svg = d3.select(el).append("svg")
-     .style("width", "100%")
-     .style("height", "100%")
-     .style("background-color", "#dddfe6");
-   setWatchers();
-});
+
 
 }
 });

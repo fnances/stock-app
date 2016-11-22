@@ -1,21 +1,22 @@
 
 
 export default class StockAppController {
-  constructor (apiConnect, stockUtils, $scope) {
+  constructor ($scope, apiConnect, stockUtils, d3Service) {
+    this.$scope = $scope;
     this.apiConnect = apiConnect;
     this.stockUtils = stockUtils;
+    this.d3Service = d3Service;
 
-    this.$scope = $scope;
     this.state = {
       showDateWarning: false,
       showModal: false,
+      d3IsReady: false,
       selectedTab : "graph",
       clickedStock: "",
       stocks: [],
       refresh: true,
       stockSymbols: [],
       selectedSymbol: "CSCO",
-      stocksToDisplay: [],
       date: {
         to: null,
         from: null,
@@ -26,28 +27,31 @@ export default class StockAppController {
   }
   $onInit () {
     const { selectedSymbol } = this.state;
-
     this.apiConnect.getStockInfo().then(res => {
+
       this.state.stocks = this.stockUtils.splitBySymbols(res);
       this.state.stockSymbols = Object.keys(this.state.stocks);
       this.state.stocksToDisplay = this.state.stocks[selectedSymbol];
-      this.setNewMaxMinDate();
       this.state.clickedStock = this.state.stocksToDisplay[0];
+
+      this.setNewMaxMinDate();
+    });
+
+    this.d3Service.d3().then(() => {
+      this.state.d3IsReady = true;
     });
 
   }
   setNewMaxMinDate () {
     const { maxAndMin } = this.stockUtils;
     const { selectedSymbol } = this.state;
+    const { from, to} = this.state.date;
     const { maxDate, minDate } = maxAndMin(this.state.stocks[selectedSymbol]);
 
-    const { from, to } = this.state.date;
-
-    this.state.date = Object.assign({}, this.state.date, { maxDate, minDate });
-
-    this.state.date.to = to || new Date(maxDate);
-    this.state.date.from = from || new Date(minDate);
-
+    this.state.date.maxDate = maxDate;
+    this.state.date.minDate = minDate;
+    this.state.date.to =  to  || maxDate;
+    this.state.date.from = from || minDate;
   }
   selectTab (tab) {
     this.state.selectedTab = tab;
@@ -62,8 +66,8 @@ export default class StockAppController {
       this.setNewMaxMinDate();
       return;
     }
-
-    this.state.stocksToDisplay = this.filterByDate(this.state.stocks[selectedSymbol]);
+    const newStocks = this.filterByDate([...this.state.stocks[selectedSymbol]]);
+    this.state.stocksToDisplay = newStocks;
 
   }
   validDate (from, to) {
@@ -74,20 +78,30 @@ export default class StockAppController {
   addStock (stock) {
     const { symbol } = stock;
     const { stocks, selectedSymbol } = this.state;
+    const newStocks = [...stocks[symbol], stock];
+    this.state.stocks[symbol] = newStocks;
 
-    const { sortStocksByDate } = this.stockUtils;
-    this.state.stocks[symbol] = sortStocksByDate([...stocks[symbol], stock]);
-
-    this.state.stocksToDisplay = this.filterByDate(this.state.stocks[selectedSymbol]);
+    this.state.stocksToDisplay = this.filterByDate([...this.state.stocks[selectedSymbol]]);
     this.setNewMaxMinDate();
   }
+  stockEquals (stock, stock2) {
+    for (let key in stock) {
+      if (key !== "color" && stock[key] !== stock2[key]) {
+        return false;
+      }
+    }
+    return true;
+  }
   removeStock () {
-
+    const { stockEquals } = this;
     const { stocks, clickedStock, selectedSymbol } = this.state;
     const { symbol } = clickedStock;
-    this.state.stocks[symbol] = stocks[symbol].filter(stock => stock !== clickedStock);
 
-    this.state.stocksToDisplay = this.filterByDate(this.state.stocks[selectedSymbol]);
+    const newStocksForSymbol = stocks[symbol]
+      .filter(stock => !stockEquals(stock, clickedStock));
+
+    this.state.stocks[symbol] = newStocksForSymbol;
+    this.state.stocksToDisplay = [...this.state.stocks[selectedSymbol]];
 
     this.state.clickedStock = "";
     this.state.selectedTab = "chart";
@@ -103,7 +117,6 @@ export default class StockAppController {
     this.state.clickedStock = stock;
     this.state.selectedTab = "table";
     this.$scope.$apply();
-
 
   }
   filterByDate (stocks) {
@@ -122,8 +135,7 @@ export default class StockAppController {
   adjustDate ([from, to]) {
     this.state.date.from = from;
     this.state.date.to = to;
-
-    this.state.stocksToDisplay = this.filterByDate(this.state.stocksToDisplay);
+    this.state.stocksToDisplay = this.filterByDate([...this.state.stocksToDisplay]);
     this.$scope.$apply();
   }
   onStockSelect () {
@@ -135,4 +147,4 @@ export default class StockAppController {
 }
 
 
-StockAppController.$inject = ["apiConnect", "stockUtils", "$scope"];
+StockAppController.$inject = ["$scope", "apiConnect", "stockUtils", "d3Service"];

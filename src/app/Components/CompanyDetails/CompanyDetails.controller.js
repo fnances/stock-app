@@ -2,6 +2,8 @@
 
 export default class CompanyDetailsController {
   $onChanges (changes) {
+    if (!this.companyStocks) { return; }
+
     if (changes.company) {
       this.company = this.company;
     }
